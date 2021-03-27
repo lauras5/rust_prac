@@ -1,2 +1,2 @@
 # weight_on_mars
-calculate weight on mars
+calculate weight on mars in kg 

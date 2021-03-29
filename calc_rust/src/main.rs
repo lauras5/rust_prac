@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 fn main() {
     // hold planet surface mass
-    let mut planets: HashMap<&str, f32>= HashMap::new();
+    let mut planets: HashMap<&str, f32> = HashMap::new();
     planets.insert("Mercury", 0.38);
     planets.insert("Venus", 0.91);
     planets.insert("Earth", 1.0);

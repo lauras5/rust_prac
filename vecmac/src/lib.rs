@@ -1,22 +1,32 @@
 #[macro_export]
 macro_rules! avec {
-    () => {
-        Vec::new()      // doesnt need block
-    };
-    ($($elem: expr), + $(,)?) => {{ // expr basically anything you can terminate w/ semicolon
-        let mut vs = Vec::new();
-        $(vs.push($elem);)+
-        vs
-    }};
-    ($elem: expr; $count:expr) => {{ // expr basically anything you can terminate w/ semicolon
-        let mut vs = Vec::new();
-        let x = $elem;
-        for _ in 0..$count {
-            vs.push(x.clone());
-        }
-        vs
-    }};
+    ($($elem: expr),*) => {{ // expr basically anything you can terminate w/ semicolon
+        // check count is const
+        const C: usize = $crate::count![@COUNT; $($elem),*];
 
+        #[allow(unused_mut)]
+        let mut vs = Vec::with_capacity(C); // known at compile
+        $(vs.push($elem);)*
+        vs
+    }};
+    ($($elem: expr,)*) => {{
+        $crate::avec![$($elem),*]
+    }};
+    ($elem: expr; $count:expr) => {{
+        let mut vs = Vec::new();
+        // vs.extend(std::iter::repeat($elem).take(count)); // repeat yields clones for elem passed
+        vs.resize($count, $elem); // more efficient
+        vs
+    }};
+}
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! count {
+    (@COUNT; $($elem: expr),*) => {
+        <[()]>::len(&[$($crate::count![@SUBST; $elem]),*])
+    };
+    (@SUBST; $($_elem: expr),*) => {()}; // return unit not expr
 }
 
 #[test]
@@ -65,7 +75,7 @@ fn clone_2() {
 #[test]
 fn clone_2_nonliteral() {
     let mut y = Some(42);
-    let mut x: Vec<u32> = avec![y.take().unwrap(); 2];
+    let x: Vec<u32> = avec![y.take().unwrap(); 2];
     assert!(!x.is_empty());
     assert_eq!(x.len(), 2);
     assert_eq!(x[0], 42);

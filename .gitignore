@@ -2,4 +2,6 @@ calc_rust/target
 simple_calc/target
 adv_calc/target
 vecmac/target
+iterators/target
+server/target
 .idea

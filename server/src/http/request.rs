@@ -61,13 +61,13 @@ impl From<Utf8Error> for ParseError {
 }
 
 impl Display for ParseError {
-    fn fmt(&self, f: &mut Formatter) -> FrmResult {
+    fn fmt(&self, f: &mut Formatter) -> FmtResult {
         write!(f, "{}", self.message())
     }
 }
 
 impl Debug for ParseError {
-    fn fmt(&self, f: &mut Formatter) -> FrmResult {
+    fn fmt(&self, f: &mut Formatter) -> FmtResult {
         write!(f, "{}", self.message())
     }
 }
